@@ -93,8 +93,8 @@ public class TextHandler implements Runnable {
             }
         }
         setArticle1(a1);
-        setArticle1(a2);
-        setArticle1(a3);
+        setArticle2(a2);
+        setArticle3(a3);
 
         System.out.println(getArticle1());
         System.out.println(getArticle2());
