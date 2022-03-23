@@ -3,7 +3,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TextHandler implements Runnable {
-    private String s;
+    private String words[];
     public ReadWriteLock text = new ReentrantReadWriteLock();
     private ReadWriteLock a1lock = new ReentrantReadWriteLock();
     private ReadWriteLock a2lock = new ReentrantReadWriteLock();
@@ -13,8 +13,8 @@ public class TextHandler implements Runnable {
     private int article3;
     public Condition c = text.writeLock().newCondition();
 
-    public TextHandler(String s) {
-        this.s = s.toLowerCase();
+    public TextHandler(String[] s) {
+        this.words = s;
     }
 
     public int getArticle1() {
@@ -91,7 +91,6 @@ public class TextHandler implements Runnable {
         int a1 = 0;
         int a2 = 0;
         int a3 = 0;
-        String[] words = s.split(" ");
         for (int i = 0; i < words.length; i++) {
             if (words[i].equals("a")) {
                 a1++;
@@ -106,13 +105,7 @@ public class TextHandler implements Runnable {
         setArticle1(a1);
         setArticle2(a2);
         setArticle3(a3);
-        System.out.println("Finished checking");
-        text.writeLock().lock();
-        try {
-            c.signalAll();
-        } finally {
-            text.writeLock().unlock();
-        }
-
+       // System.out.println("Finished checking");
+        update();
     }
 }

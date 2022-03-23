@@ -15,8 +15,8 @@ public class cachedpool extends ThreadPoolExecutor {
         // TODO Auto-generated constructor stub
     }
 
-    public static ExecutorService newCachedThreadPool() {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+    public static ExecutorService newCachedThreadPool(int coresize) {
+        return new ThreadPoolExecutor(coresize, coresize,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>());
     }
