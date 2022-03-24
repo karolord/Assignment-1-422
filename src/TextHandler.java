@@ -3,17 +3,19 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TextHandler implements Runnable {
+    public  String name;
     private String words[];
-    public ReadWriteLock text = new ReentrantReadWriteLock();
     private ReadWriteLock a1lock = new ReentrantReadWriteLock();
     private ReadWriteLock a2lock = new ReentrantReadWriteLock();
     private ReadWriteLock a3lock = new ReentrantReadWriteLock();
     private int article1;
     private int article2;
     private int article3;
-    public Condition c = text.writeLock().newCondition();
+    private boolean finished = false;
+    private ReadWriteLock statuslock = new ReentrantReadWriteLock();
 
-    public TextHandler(String[] s) {
+    public TextHandler(String name, String[] s) {
+        this.name = name;
         this.words = s;
     }
 
@@ -76,13 +78,22 @@ public class TextHandler implements Runnable {
 
         }
     }
-
-    public void update() {
-        text.writeLock().lock();
+    public void setStatus(boolean status) {
+        statuslock.writeLock().lock();
         try {
-            c.signalAll();
+            this.finished = status;
         } finally {
-            text.writeLock().unlock();
+            statuslock.writeLock().unlock();
+
+        }
+    }
+
+    public boolean getFinished() {
+        statuslock.readLock().lock();
+        try {
+            return this.finished;
+        } finally {
+            statuslock.readLock().unlock();
         }
     }
 
@@ -106,6 +117,6 @@ public class TextHandler implements Runnable {
         setArticle2(a2);
         setArticle3(a3);
        // System.out.println("Finished checking");
-        update();
+        setStatus(true);
     }
 }
